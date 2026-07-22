@@ -161,8 +161,8 @@ export default function AdminPage() {
           <p className="text-xs text-muted-foreground -mt-2">{shopDisplayName}</p>
         )}
 
-        {/* Grid de módulos — glass tiles */}
-        <section aria-label="Módulos" className="grid grid-cols-4 gap-2 sm:gap-3">
+        {/* Grid de módulos — glass tiles compactos, label em serif */}
+        <section aria-label="Módulos" className="grid grid-cols-4 gap-2.5">
           {TILES.map((t, i) => {
             const Icon = t.icon;
             const highlight = i === 0;
@@ -171,36 +171,39 @@ export default function AdminPage() {
                 key={t.key}
                 onClick={() => openTile(t)}
                 className={[
-                  'aspect-square rounded-xl border flex flex-col items-center justify-center gap-1.5 px-1 text-center transition-all',
-                  'bg-background/35 backdrop-blur-md hover:bg-background/45 active:scale-[0.97]',
-                  'shadow-[inset_0_1px_0_0_hsl(0_0%_100%/0.04)]',
+                  'aspect-square rounded-[14px] border flex flex-col items-center justify-center gap-1 px-1 text-center transition-all',
+                  'bg-black/55 backdrop-blur-xl hover:bg-black/65 active:scale-[0.97]',
                   highlight
-                    ? 'border-primary/70 ring-1 ring-primary/40 shadow-[0_0_18px_-4px_hsl(var(--primary)/0.45)]'
-                    : 'border-white/5 hover:border-white/10',
+                    ? 'border-primary/80 ring-1 ring-primary/50 shadow-[0_0_20px_-6px_hsl(var(--primary)/0.55)]'
+                    : 'border-white/[0.06]',
                   t.soon ? 'opacity-70' : '',
                 ].join(' ')}
               >
-                <Icon size={22} className={highlight ? 'text-primary' : 'text-foreground/85'} />
-                <span className="text-[11px] leading-tight text-foreground/90 font-heading">{t.label}</span>
+                <Icon size={20} strokeWidth={1.5} className={highlight ? 'text-primary' : 'text-foreground/85'} />
+                <span className={[
+                  'text-[11px] leading-tight font-heading tracking-wide',
+                  highlight ? 'text-primary' : 'text-foreground/90',
+                ].join(' ')}>{t.label}</span>
               </button>
             );
           })}
         </section>
 
-        {/* Busca de cliente — glass */}
+        {/* Busca de cliente — glass pill c/ chevron */}
         <div className="relative">
-          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+          <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
+          <ChevronDown size={16} className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             onKeyDown={(e) => { if (e.key === 'Enter') goSearch(); }}
             placeholder="Buscar cliente por nome ou telefone..."
-            className="w-full h-12 pl-9 pr-4 rounded-2xl bg-background/35 backdrop-blur-md border border-white/5 text-sm placeholder:text-muted-foreground/70 focus:outline-none focus:border-primary/60"
+            className="w-full h-12 pl-11 pr-11 rounded-2xl bg-black/55 backdrop-blur-xl border border-white/[0.06] text-sm placeholder:text-muted-foreground/80 focus:outline-none focus:border-primary/60"
           />
         </div>
 
-        {/* Data — glass */}
-        <div className="rounded-2xl bg-background/35 backdrop-blur-md border border-white/5 px-1">
+        {/* Data */}
+        <div className="rounded-2xl bg-black/55 backdrop-blur-xl border border-white/[0.06] px-1">
           <IOSDateInput
             value={date}
             onChange={(v) => setDate(v || todayISO())}
@@ -210,29 +213,31 @@ export default function AdminPage() {
         </div>
         <p className="text-xs text-muted-foreground text-center -mt-2">{weekdayLabel(date)}</p>
 
-        {/* KPIs — glass */}
-        <section className="grid grid-cols-3 gap-2 sm:gap-3">
-          <KpiCard icon={Users2}       value={kpi.total}      label="Total"      loading={loading} tint="primary" />
-          <KpiCard icon={Clock}        value={kpi.pendentes}  label="Pendentes"  loading={loading} tint="warning" />
-          <KpiCard icon={CheckCircle2} value={kpi.concluidos} label="Concluídos" loading={loading} tint="success" />
+        {/* KPIs — left-aligned, primeiro com destaque */}
+        <section className="grid grid-cols-3 gap-2.5">
+          <KpiCard icon={Users2}    value={kpi.total}      label="Total"      loading={loading} tint="primary" highlight />
+          <KpiCard icon={Clock}     value={kpi.pendentes}  label="Pendentes"  loading={loading} tint="primary" />
+          <KpiCard icon={UserCheck} value={kpi.concluidos} label="Concluídos" loading={loading} tint="success" />
         </section>
 
-        {/* Conversão — glass */}
-        <section className="rounded-2xl bg-background/35 backdrop-blur-md border border-white/5 p-4">
-          <div className="flex items-center justify-between mb-2">
+        {/* Conversão */}
+        <section className="rounded-2xl bg-black/55 backdrop-blur-xl border border-white/[0.06] p-4">
+          <div className="flex items-center justify-between mb-1">
             <div className="flex items-center gap-2">
-              <ShoppingBag size={16} className="text-primary" />
-              <span className="text-sm text-foreground/90 font-heading">Conversão da Loja</span>
+              <TrendingUp size={16} className="text-primary" />
+              <span className="text-base font-heading text-foreground/90">Conversão da Loja</span>
             </div>
-            <span className="text-primary font-semibold">{kpi.conversao}%</span>
+            <div className="text-right">
+              <div className="text-primary font-semibold text-lg leading-none">{kpi.conversao}%</div>
+              <div className="text-[10px] text-muted-foreground mt-0.5">compras / adições</div>
+            </div>
           </div>
-          <div className="h-1.5 rounded-full bg-muted/30 overflow-hidden">
+          <div className="h-1.5 rounded-full bg-white/5 overflow-hidden mt-3">
             <div
               className="h-full bg-primary transition-all"
               style={{ width: `${Math.min(100, kpi.conversao)}%` }}
             />
           </div>
-          <p className="text-[11px] text-muted-foreground mt-2">concluídos / total no dia</p>
         </section>
       </div>
     </div>
