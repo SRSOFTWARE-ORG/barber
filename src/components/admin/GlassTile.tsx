@@ -18,7 +18,7 @@ export default function GlassTile({
     <button
       {...rest}
       className={[
-        'aspect-square rounded-[12px] border flex flex-col items-center justify-center gap-0.5 px-1 text-center transition-all',
+        'h-16 rounded-[12px] border flex flex-col items-center justify-center gap-0.5 px-1 text-center transition-all',
         'bg-black/55 backdrop-blur-xl hover:bg-black/65 active:scale-[0.97]',
         highlight
           ? 'border-primary/80 ring-1 ring-primary/50 shadow-[0_0_16px_-6px_hsl(var(--primary)/0.55)]'
