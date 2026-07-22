@@ -2,15 +2,19 @@ import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import {
-  ArrowLeft, MessageCircle, LayoutDashboard, TrendingUp, Users, Gauge,
+  MessageCircle, LayoutDashboard, TrendingUp, Users, Gauge,
   BrainCircuit, CalendarDays, UserRound, Cake, Wallet, Crown, Scissors,
   Camera, Store, Package, Tag, Star, MessageSquare, Zap, Settings2,
-  UserCog, Building2, Smartphone, FileText, Palette, Search, Calendar,
-  Users2, Clock, UserCheck, ShoppingBag, ChevronDown,
+  UserCog, Building2, Smartphone, FileText, Palette, Search,
+  Users2, Clock, UserCheck, ChevronDown,
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import IOSDateInput from '@/components/IOSDateInput';
+import AdminHeader from '@/components/admin/AdminHeader';
+import GlassCard from '@/components/admin/GlassCard';
+import GlassTile from '@/components/admin/GlassTile';
+import KpiCard from '@/components/admin/KpiCard';
 
 type Tile = {
   key: string;
@@ -64,7 +68,6 @@ const PT_WEEKDAY = ['domingo','segunda-feira','terça-feira','quarta-feira','qui
 
 function humanDate(iso: string): string {
   const [y, m, d] = iso.split('-').map(Number);
-  const dt = new Date(y, m - 1, d);
   return `${d} de ${PT_MONTHS[m - 1]} de ${y}`;
 }
 function weekdayLabel(iso: string): string {
@@ -135,17 +138,10 @@ export default function AdminPage() {
 
   return (
     <div className="min-h-screen pb-24">
-      {/* Header */}
-      <header className="sticky top-0 z-10 bg-background/85 backdrop-blur border-b border-border/50">
-        <div className="max-w-3xl mx-auto flex items-center gap-3 px-4 h-14">
-          <button
-            onClick={() => nav(-1)}
-            aria-label="Voltar"
-            className="w-9 h-9 rounded-full flex items-center justify-center hover:bg-muted/40 text-foreground"
-          >
-            <ArrowLeft size={20} />
-          </button>
-          <h1 className="font-heading text-2xl text-foreground flex-1 truncate">Painel Admin</h1>
+      <AdminHeader
+        title="Painel Admin"
+        subtitle={shopDisplayName ?? undefined}
+        right={
           <button
             onClick={() => nav('/chat')}
             aria-label="Mensagens"
@@ -153,43 +149,25 @@ export default function AdminPage() {
           >
             <MessageCircle size={20} />
           </button>
-        </div>
-      </header>
+        }
+      />
 
       <div className="max-w-3xl mx-auto px-4 pt-4 space-y-4">
-        {shopDisplayName && (
-          <p className="text-xs text-muted-foreground -mt-2">{shopDisplayName}</p>
-        )}
-
-        {/* Grid de módulos — glass tiles compactos, label em serif */}
+        {/* Grid de módulos */}
         <section aria-label="Módulos" className="grid grid-cols-4 gap-2.5">
-          {TILES.map((t, i) => {
-            const Icon = t.icon;
-            const highlight = i === 0;
-            return (
-              <button
-                key={t.key}
-                onClick={() => openTile(t)}
-                className={[
-                  'aspect-square rounded-[14px] border flex flex-col items-center justify-center gap-1 px-1 text-center transition-all',
-                  'bg-black/55 backdrop-blur-xl hover:bg-black/65 active:scale-[0.97]',
-                  highlight
-                    ? 'border-primary/80 ring-1 ring-primary/50 shadow-[0_0_20px_-6px_hsl(var(--primary)/0.55)]'
-                    : 'border-white/[0.06]',
-                  t.soon ? 'opacity-70' : '',
-                ].join(' ')}
-              >
-                <Icon size={20} strokeWidth={1.5} className={highlight ? 'text-primary' : 'text-foreground/85'} />
-                <span className={[
-                  'text-[11px] leading-tight font-heading tracking-wide',
-                  highlight ? 'text-primary' : 'text-foreground/90',
-                ].join(' ')}>{t.label}</span>
-              </button>
-            );
-          })}
+          {TILES.map((t, i) => (
+            <GlassTile
+              key={t.key}
+              icon={t.icon}
+              label={t.label}
+              highlight={i === 0}
+              dim={t.soon}
+              onClick={() => openTile(t)}
+            />
+          ))}
         </section>
 
-        {/* Busca de cliente — glass pill c/ chevron */}
+        {/* Busca */}
         <div className="relative">
           <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
           <ChevronDown size={16} className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
@@ -203,17 +181,17 @@ export default function AdminPage() {
         </div>
 
         {/* Data */}
-        <div className="rounded-2xl bg-black/55 backdrop-blur-xl border border-white/[0.06] px-1">
+        <GlassCard padded={false} className="px-1">
           <IOSDateInput
             value={date}
             onChange={(v) => setDate(v || todayISO())}
             placeholder={humanDate(date)}
             className="!bg-transparent !border-0 !h-12 !rounded-2xl"
           />
-        </div>
+        </GlassCard>
         <p className="text-xs text-muted-foreground text-center -mt-2">{weekdayLabel(date)}</p>
 
-        {/* KPIs — left-aligned, primeiro com destaque */}
+        {/* KPIs */}
         <section className="grid grid-cols-3 gap-2.5">
           <KpiCard icon={Users2}    value={kpi.total}      label="Total"      loading={loading} tint="primary" highlight />
           <KpiCard icon={Clock}     value={kpi.pendentes}  label="Pendentes"  loading={loading} tint="primary" />
@@ -221,14 +199,16 @@ export default function AdminPage() {
         </section>
 
         {/* Conversão */}
-        <section className="rounded-2xl bg-black/55 backdrop-blur-xl border border-white/[0.06] p-4">
+        <GlassCard>
           <div className="flex items-center justify-between mb-1">
             <div className="flex items-center gap-2">
               <TrendingUp size={16} className="text-primary" />
               <span className="text-base font-heading text-foreground/90">Conversão da Loja</span>
             </div>
             <div className="text-right">
-              <div className="text-primary font-semibold text-lg leading-none">{kpi.conversao}%</div>
+              <div className="text-primary font-semibold text-lg leading-none">
+                {loading ? '—' : `${kpi.conversao}%`}
+              </div>
               <div className="text-[10px] text-muted-foreground mt-0.5">compras / adições</div>
             </div>
           </div>
@@ -238,36 +218,8 @@ export default function AdminPage() {
               style={{ width: `${Math.min(100, kpi.conversao)}%` }}
             />
           </div>
-        </section>
+        </GlassCard>
       </div>
-    </div>
-  );
-}
-
-function KpiCard({
-  icon: Icon, value, label, loading, tint, highlight = false,
-}: {
-  icon: any;
-  value: number; label: string; loading: boolean;
-  tint: 'primary' | 'warning' | 'success';
-  highlight?: boolean;
-}) {
-  const tintCls =
-    tint === 'primary' ? 'text-primary' :
-    tint === 'warning' ? 'text-amber-400' :
-    'text-emerald-400';
-  return (
-    <div className={[
-      'rounded-2xl bg-black/55 backdrop-blur-xl border p-3.5 flex flex-col items-start gap-1',
-      highlight
-        ? 'border-primary/70 ring-1 ring-primary/40 shadow-[0_0_20px_-6px_hsl(var(--primary)/0.55)]'
-        : 'border-white/[0.06]',
-    ].join(' ')}>
-      <Icon size={16} className={tintCls} strokeWidth={1.75} />
-      <span className={`text-3xl font-bold leading-none mt-1 ${tintCls}`}>
-        {loading ? '—' : value}
-      </span>
-      <span className="text-[11px] text-muted-foreground mt-0.5">{label}</span>
     </div>
   );
 }
