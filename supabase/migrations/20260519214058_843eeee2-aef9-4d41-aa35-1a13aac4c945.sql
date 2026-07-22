@@ -1,0 +1,1 @@
+DELETE FROM public.evolution_config WHERE instance = 'Barbearia Do Jeffao';

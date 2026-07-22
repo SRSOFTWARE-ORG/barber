@@ -1,0 +1,43 @@
+project_id = "ddrwahpcbsbxhflhskuh"
+
+[functions.setup-ceo]
+verify_jwt = false
+
+[functions.evolution-webhook]
+verify_jwt = false
+
+[functions.web-push-send]
+verify_jwt = false
+
+[functions.mp-oauth-callback]
+verify_jwt = false
+
+[functions.mp-webhook]
+verify_jwt = false
+
+[functions.mp-public-key]
+verify_jwt = false
+
+[functions.mp-process-payment]
+verify_jwt = false
+
+[functions.mp-process-subscription]
+verify_jwt = false
+
+[functions.passkey-register-options]
+verify_jwt = false
+
+[functions.passkey-register-verify]
+verify_jwt = false
+
+[functions.passkey-auth-options]
+verify_jwt = false
+
+[functions.passkey-auth-verify]
+verify_jwt = false
+
+[functions.link-social-identity]
+verify_jwt = false
+
+[functions.evolution-instance]
+verify_jwt = false

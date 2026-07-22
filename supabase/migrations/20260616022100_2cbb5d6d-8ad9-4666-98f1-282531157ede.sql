@@ -1,0 +1,1 @@
+ALTER TABLE public.servicos ADD COLUMN IF NOT EXISTS foto_url text;

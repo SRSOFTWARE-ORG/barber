@@ -1,0 +1,17 @@
+# Barbearia Classic
+
+> Aplicativo de agendamento de barbearia — agende cortes de cabelo masculino e barba, veja serviços, galeria de cortes e promoções.
+
+A Barbearia Classic é um PWA que conecta clientes aos seus barbeiros, com agendamento online, portfólio de cortes, promoções e planos de fidelidade.
+
+## Pages
+
+- [Início](/): Visão geral da barbearia, agendamento rápido e galeria de cortes.
+- [Serviços](/services): Lista de serviços de corte de cabelo masculino e barba com valores.
+- [Galeria](/gallery): Portfólio de cortes de cabelo masculino realizados pelos barbeiros.
+- [Promoções](/promos): Ofertas e promoções atuais da barbearia.
+- [Agendar](/booking): Agende seu horário com o barbeiro escolhido.
+
+## Optional
+
+- [Instalar App](/install): Como instalar o aplicativo no celular.

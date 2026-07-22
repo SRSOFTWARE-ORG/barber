@@ -1,0 +1,1 @@
+REVOKE EXECUTE ON FUNCTION public.cron_process_whatsapp_queue() FROM PUBLIC, anon, authenticated;

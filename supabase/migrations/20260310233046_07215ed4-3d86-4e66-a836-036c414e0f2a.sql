@@ -1,0 +1,1 @@
+ALTER TABLE public.promocoes ADD COLUMN preco_promocional text;

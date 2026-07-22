@@ -1,0 +1,556 @@
+/* Fonts são carregadas de forma não-bloqueante via <link> em index.html
+   (preload + onload swap), evitando bloqueio de renderização (TBT/LCP). */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --safe-top: max(env(safe-area-inset-top, 0px), 0.9rem);
+    --background: 25 30% 12%;
+    --foreground: 38 45% 85%;
+
+    --card: 25 35% 18%;
+    --card-foreground: 38 45% 85%;
+
+    --popover: 25 35% 15%;
+    --popover-foreground: 38 45% 85%;
+
+    --primary: 38 55% 55%;
+    --primary-foreground: 25 40% 10%;
+
+    --secondary: 25 30% 25%;
+    --secondary-foreground: 38 40% 80%;
+
+    --muted: 25 20% 20%;
+    --muted-foreground: 30 15% 55%;
+
+    --accent: 30 70% 45%;
+    --accent-foreground: 38 45% 90%;
+
+    --destructive: 0 60% 45%;
+    --destructive-foreground: 0 0% 95%;
+
+    --border: 30 25% 28%;
+    --input: 25 25% 22%;
+    --ring: 38 55% 55%;
+
+    --radius: 0.75rem;
+
+    --sidebar-background: 25 30% 14%;
+    --sidebar-foreground: 38 45% 85%;
+    --sidebar-primary: 38 55% 55%;
+    --sidebar-primary-foreground: 25 40% 10%;
+    --sidebar-accent: 25 30% 22%;
+    --sidebar-accent-foreground: 38 45% 85%;
+    --sidebar-border: 30 25% 28%;
+    --sidebar-ring: 38 55% 55%;
+
+    /* Custom tokens */
+    --gold: 38 55% 55%;
+    --gold-light: 38 60% 70%;
+    --wood-light: 30 35% 40%;
+    --wood-medium: 25 30% 25%;
+    --wood-dark: 25 30% 12%;
+    --cognac: 20 60% 35%;
+    --cream: 38 45% 85%;
+    --occupied: 0 0% 35%;
+
+    --font-display: 'Cinzel Decorative', serif;
+    --font-heading: 'Playfair Display', serif;
+    --font-body: 'Lato', sans-serif;
+
+    --shadow-carved: inset 0 2px 4px rgba(0,0,0,0.4), 0 1px 0 rgba(255,255,255,0.05);
+    --shadow-raised: 0 4px 12px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.08);
+  }
+
+  /* ============================================
+     TEMA MONOCROMÁTICO — Vinculado ao JEFFÃO
+     Cinza / Preto / Branco harmônico
+     ============================================ */
+  .theme-jeffao {
+    --background: 0 0% 8%;
+    --foreground: 0 0% 92%;
+
+    --card: 0 0% 14%;
+    --card-foreground: 0 0% 92%;
+
+    --popover: 0 0% 12%;
+    --popover-foreground: 0 0% 92%;
+
+    --primary: 0 0% 88%;
+    --primary-foreground: 0 0% 10%;
+
+    --secondary: 0 0% 20%;
+    --secondary-foreground: 0 0% 90%;
+
+    --muted: 0 0% 18%;
+    --muted-foreground: 0 0% 70%;
+
+    --accent: 0 0% 70%;
+    --accent-foreground: 0 0% 10%;
+
+    --destructive: 0 0% 35%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 0 0% 26%;
+    --input: 0 0% 18%;
+    --ring: 0 0% 75%;
+
+    --sidebar-background: 0 0% 10%;
+    --sidebar-foreground: 0 0% 90%;
+    --sidebar-primary: 0 0% 88%;
+    --sidebar-primary-foreground: 0 0% 10%;
+    --sidebar-accent: 0 0% 18%;
+    --sidebar-accent-foreground: 0 0% 90%;
+    --sidebar-border: 0 0% 26%;
+    --sidebar-ring: 0 0% 75%;
+
+    --gold: 0 0% 85%;
+    --gold-light: 0 0% 95%;
+    --wood-light: 0 0% 45%;
+    --wood-medium: 0 0% 25%;
+    --wood-dark: 0 0% 10%;
+    --cognac: 0 0% 30%;
+    --cream: 0 0% 92%;
+    --occupied: 0 0% 30%;
+  }
+
+  /* Os componentes .wood-card / .vintage-btn / .bottom-nav agora usam as
+     variáveis CSS do tema (--card, --secondary, etc), portanto as overrides
+     específicas do .theme-jeffao não são mais necessárias. */
+}
+
+@layer base {
+  * {
+    @apply border-border;
+    /* Disable text selection globally */
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+  }
+
+  /* Allow selection / typing only inside form inputs */
+  input, textarea, [contenteditable="true"] {
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    user-select: text;
+  }
+
+  /* Block dragging / accidental selection of all media (imagens, logos,
+     banners, cards de serviço/barbeiro, promoções). */
+  img, video, picture, svg, [role="img"] {
+    -webkit-user-drag: none;
+    -khtml-user-drag: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    touch-action: manipulation;
+  }
+
+
+
+  html, body {
+    /* Prevent horizontal overflow and pinch zoom */
+    max-width: 100vw;
+    overflow-x: hidden;
+    touch-action: pan-x pan-y;
+    overscroll-behavior-x: none;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-body);
+  }
+
+  h1, h2, h3 {
+    font-family: var(--font-heading);
+  }
+
+  /* Prevent any element from breaking the viewport horizontally */
+  #root {
+    max-width: 100vw;
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  /* Hide scrollbars globally (mantém o scroll funcional) */
+  html, body, * {
+    scrollbar-width: none;          /* Firefox */
+    -ms-overflow-style: none;       /* IE/Edge legado */
+  }
+  html::-webkit-scrollbar,
+  body::-webkit-scrollbar,
+  *::-webkit-scrollbar {
+    display: none;                  /* Chrome/Safari/Webkit */
+    width: 0;
+    height: 0;
+  }
+}
+
+@layer components {
+  /* Todos os componentes-base usam tokens CSS do tema (--card, --primary, etc).
+     Assim, quando o ThemeProvider muda as variáveis em :root,
+     TODOS os cards / botões / inputs do app refletem o novo tema instantaneamente. */
+  .wood-card {
+    background: linear-gradient(145deg, hsl(var(--card)), hsl(var(--card) / 0.92));
+    box-shadow: var(--shadow-raised);
+    border: 1px solid hsl(var(--border));
+    border-radius: var(--radius);
+    color: hsl(var(--card-foreground));
+  }
+
+  .gold-border {
+    border: 2px solid hsl(var(--primary));
+  }
+
+  .cognac-highlight {
+    background: linear-gradient(145deg, hsl(var(--accent)), hsl(var(--accent) / 0.85));
+    border: 2px solid hsl(var(--primary));
+    color: hsl(var(--accent-foreground));
+  }
+
+  .slot-available {
+    @apply wood-card gold-border cursor-pointer transition-all duration-200;
+  }
+  .slot-available:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.6);
+  }
+
+  .slot-selected {
+    @apply cognac-highlight cursor-pointer;
+    box-shadow: 0 0 16px hsl(var(--primary) / 0.3);
+  }
+  .slot-selected .text-foreground,
+  .slot-selected .text-muted-foreground,
+  .slot-selected .text-primary,
+  .slot-selected .text-accent {
+    color: hsl(var(--accent-foreground)) !important;
+  }
+
+  .slot-occupied {
+    background: hsl(var(--muted));
+    border: 1px solid hsl(var(--border));
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .bottom-nav {
+    background: linear-gradient(to top, hsl(var(--background)), hsl(var(--card)));
+    border-top: 1px solid hsl(var(--border));
+  }
+
+  .vintage-btn {
+    background: linear-gradient(145deg, hsl(var(--secondary)), hsl(var(--secondary) / 0.85));
+    box-shadow: var(--shadow-raised);
+    border: 1px solid hsl(var(--border));
+    color: hsl(var(--foreground));
+    font-family: var(--font-heading);
+    transition: all 0.2s;
+  }
+  .vintage-btn:hover {
+    background: linear-gradient(145deg, hsl(var(--secondary) / 0.9), hsl(var(--secondary) / 0.75));
+  }
+  .vintage-btn:active {
+    box-shadow: var(--shadow-carved);
+  }
+
+  .vintage-input {
+    background: hsl(var(--input));
+    border: 1px solid hsl(var(--border));
+    color: hsl(var(--foreground));
+    font-family: var(--font-body);
+  }
+  .vintage-input::placeholder {
+    color: hsl(var(--muted-foreground));
+  }
+  .vintage-input:focus {
+    border-color: hsl(var(--primary));
+    outline: none;
+    box-shadow: 0 0 0 2px hsl(var(--primary) / 0.2);
+  }
+
+  .page-shell {
+    min-height: 100vh;
+    padding-bottom: 5.75rem;
+  }
+
+  .page-header {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    padding-top: calc(env(safe-area-inset-top, 0px) + 0.5rem);
+    padding-bottom: 0.6rem;
+    margin-bottom: 0.25rem;
+    background: linear-gradient(180deg, hsl(var(--background)) 0%, hsl(var(--background) / 0.96) 78%, hsl(var(--background) / 0) 100%);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  /* Microinterações: empurram a animação para a GPU e evitam jank no mobile. */
+  .hover-scale {
+    transition: transform 0.18s ease-out;
+    will-change: transform;
+  }
+  .hover-scale:active {
+    transform: scale(0.96);
+  }
+  @media (hover: hover) {
+    .hover-scale:hover {
+      transform: scale(1.03);
+    }
+  }
+
+  /* Itens animados do carrinho: compõem só transform/opacity (sem layout/paint). */
+  .cart-anim {
+    will-change: transform, opacity;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
+}
+
+/* Respeita usuários que pedem menos movimento (acessibilidade + menos jank). */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+
+/* Linha de scanner animada do QR Code de conexão WhatsApp */
+@keyframes qr-scan {
+  0% { top: 0%; opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+.qr-scanline {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, hsl(var(--primary)), transparent);
+  box-shadow: 0 0 12px 2px hsl(var(--primary) / 0.7);
+  animation: qr-scan 2.2s ease-in-out infinite;
+}
+
+/* Esconde a barra de rolagem mantendo o scroll (abas do painel CEO) */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* ===== Animações de eventos sazonais (Central de Eventos do CEO) ===== */
+@keyframes event-fall {
+  0% { transform: translateY(-12vh) translateX(0) rotate(0deg); opacity: 0; }
+  10% { opacity: 1; }
+  100% { transform: translateY(112vh) translateX(var(--drift, 0px)) rotate(360deg); opacity: 1; }
+}
+@keyframes event-rise {
+  0% { transform: translateY(112vh) translateX(0) rotate(0deg); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(-12vh) translateX(var(--drift, 0px)) rotate(8deg); opacity: 0; }
+}
+@keyframes event-twinkle {
+  0%, 100% { transform: scale(0.6); opacity: 0.25; }
+  50% { transform: scale(1.15); opacity: 1; }
+}
+.event-particle {
+  position: fixed;
+  top: 0;
+  will-change: transform, opacity;
+  pointer-events: none;
+  user-select: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .event-particle { display: none; }
+}
+
+/* ===== Animações de CELEBRAÇÃO em tela cheia (eventos premium) ===== */
+
+/* Entrada do overlay */
+@keyframes celeb-backdrop-in { from { opacity: 0; } to { opacity: 1; } }
+
+/* Brilho "shimmer" que varre o banner/fundo */
+@keyframes celeb-shimmer {
+  0% { background-position: -150% 0; }
+  100% { background-position: 250% 0; }
+}
+.celeb-shimmer {
+  background-image: linear-gradient(110deg, transparent 25%, hsl(0 0% 100% / 0.35) 50%, transparent 75%);
+  background-size: 220% 100%;
+  background-repeat: no-repeat;
+  animation: celeb-shimmer 2.4s ease-in-out infinite;
+}
+
+/* Título estourando na tela */
+@keyframes celeb-headline {
+  0% { transform: scale(0.2) translateY(20px); opacity: 0; }
+  55% { transform: scale(1.12) translateY(0); opacity: 1; }
+  72% { transform: scale(0.96); }
+  100% { transform: scale(1); opacity: 1; }
+}
+@keyframes celeb-sub {
+  0%, 35% { transform: translateY(14px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+/* Bola indo na rede + tremor da rede */
+@keyframes celeb-ball {
+  0% { transform: translate(-60vw, -10vh) scale(0.5) rotate(0deg); opacity: 0; }
+  20% { opacity: 1; }
+  60% { transform: translate(0, 0) scale(1.1) rotate(540deg); opacity: 1; }
+  70% { transform: translate(4%, 2%) scale(1.05) rotate(600deg); }
+  100% { transform: translate(0, 4%) scale(1) rotate(680deg); opacity: 1; }
+}
+@keyframes celeb-net-shake {
+  0%, 54% { transform: translateX(0) scaleX(1); }
+  60% { transform: translateX(6px) scaleX(1.04); }
+  66% { transform: translateX(-4px) scaleX(0.98); }
+  72% { transform: translateX(3px); }
+  78% { transform: translateX(-2px); }
+  100% { transform: translateX(0); }
+}
+
+/* Balanço de lanternas/bandeirinhas */
+@keyframes celeb-swing {
+  0%, 100% { transform: rotate(-9deg); }
+  50% { transform: rotate(9deg); }
+}
+/* Queda de elementos festivos do topo */
+@keyframes celeb-drop {
+  0% { transform: translateY(-30vh) rotate(0deg); opacity: 0; }
+  12% { opacity: 1; }
+  100% { transform: translateY(0) rotate(0deg); opacity: 1; }
+}
+/* Brasa/fogueira pulsando */
+@keyframes celeb-glow {
+  0%, 100% { opacity: 0.45; transform: scale(1); }
+  50% { opacity: 0.85; transform: scale(1.08); }
+}
+
+/* Medalha girando */
+@keyframes celeb-spin {
+  0% { transform: rotateY(0deg) scale(0.6); opacity: 0; }
+  25% { opacity: 1; }
+  100% { transform: rotateY(720deg) scale(1); opacity: 1; }
+}
+/* Atletas cruzando a linha de chegada */
+@keyframes celeb-run {
+  0% { transform: translateX(-120%); opacity: 0; }
+  20% { opacity: 1; }
+  100% { transform: translateX(40%); opacity: 1; }
+}
+/* Anéis olímpicos pulsando */
+@keyframes celeb-ring {
+  0%, 100% { opacity: 0.18; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(1.04); }
+}
+
+/* Gravata <-> coração (morph por crossfade) */
+@keyframes celeb-morph-out {
+  0%, 40% { opacity: 1; transform: scale(1) rotate(0); }
+  60%, 100% { opacity: 0; transform: scale(0.6) rotate(-12deg); }
+}
+@keyframes celeb-morph-in {
+  0%, 45% { opacity: 0; transform: scale(0.6) rotate(12deg); }
+  70% { transform: scale(1.18) rotate(0); }
+  100% { opacity: 1; transform: scale(1) rotate(0); }
+}
+@keyframes celeb-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+
+/* Confete colorido caindo */
+@keyframes celeb-confetti {
+  0% { transform: translateY(-12vh) translateX(0) rotate(0deg); opacity: 0; }
+  8% { opacity: 1; }
+  100% { transform: translateY(112vh) translateX(var(--drift, 0px)) rotate(720deg); opacity: 1; }
+}
+.celeb-confetti-piece {
+  position: absolute;
+  top: 0;
+  border-radius: 1px;
+  will-change: transform, opacity;
+}
+
+/* Emojis subindo (corações, balões, bolhas) */
+@keyframes celeb-rise {
+  0% { transform: translateY(115vh) translateX(0) rotate(0deg); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(-15vh) translateX(var(--drift, 0px)) rotate(20deg); opacity: 0; }
+}
+
+/* Herói pulsando com batida */
+@keyframes celeb-pulse-hero {
+  0% { transform: scale(0.4); opacity: 0; }
+  30% { opacity: 1; }
+  45% { transform: scale(1.18); }
+  60% { transform: scale(0.96); }
+  75% { transform: scale(1.08); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* Herói quicando suavemente em loop */
+@keyframes celeb-bounce-hero {
+  0% { transform: translateY(40px) scale(0.5); opacity: 0; }
+  40% { opacity: 1; }
+  55% { transform: translateY(-14px) scale(1.06); }
+  70% { transform: translateY(0) scale(1); }
+  100% { transform: translateY(-8px) scale(1); opacity: 1; }
+}
+
+/* Halo/onda expandindo atrás do herói (estouro) */
+@keyframes celeb-burst {
+  0% { transform: scale(0.3); opacity: 0.7; }
+  100% { transform: scale(2.6); opacity: 0; }
+}
+
+/* Estrelas/luzes piscando */
+@keyframes celeb-twinkle {
+  0%, 100% { opacity: 0.15; transform: scale(0.7); }
+  50% { opacity: 1; transform: scale(1.25); }
+}
+
+/* Explosão de fogos */
+@keyframes celeb-firework {
+  0% { transform: scale(0); opacity: 0; }
+  20% { opacity: 1; }
+  70% { transform: scale(1.1); opacity: 0.9; }
+  100% { transform: scale(1.4); opacity: 0; }
+}
+
+/* Feixe de luz varrendo (holofote/promoção) */
+@keyframes celeb-beam {
+  0% { transform: translateX(-60%) rotate(8deg); opacity: 0; }
+  30% { opacity: 0.55; }
+  70% { opacity: 0.55; }
+  100% { transform: translateX(60%) rotate(8deg); opacity: 0; }
+}
+
+/* Faixa/bandeira ondulando */
+@keyframes celeb-wave {
+  0%, 100% { transform: translateY(0) skewX(0deg); }
+  50% { transform: translateY(-8px) skewX(-4deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .celeb-confetti-piece,
+  .celeb-shimmer { animation: none !important; }
+}

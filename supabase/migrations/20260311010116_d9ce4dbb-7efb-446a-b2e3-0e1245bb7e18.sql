@@ -1,0 +1,1 @@
+ALTER TABLE public.agendamentos ADD COLUMN arquivado boolean NOT NULL DEFAULT false;

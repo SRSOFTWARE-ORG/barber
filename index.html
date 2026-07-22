@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+
+    <!-- Google Search Console: verificação de propriedade do domínio -->
+    <meta name="google-site-verification" content="YKwgRQiv0oOMJdDMjuew6u972N_EajFQCLIB2C8BAW8" />
+
+
+    <!-- Speed up web-font fetch (reduces LCP/render-blocking) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preload" as="image" href="/pwa-icon-512.png" />
+
+    <!-- Fontes carregadas sem bloquear a renderização (preload + swap) -->
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Playfair+Display:wght@600;700&family=Lato:wght@400;700&display=swap"
+      onload="this.onload=null;this.rel='stylesheet'"
+    />
+    <noscript>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Playfair+Display:wght@600;700&family=Lato:wght@400;700&display=swap"
+      />
+    </noscript>
+
+    <title>Barbearia Classic - Tradição e Estilo</title>
+    <meta name="description" content="Agende seu horário na Barbearia Classic. Cortes profissionais com tradição e estilo.">
+
+    <!-- PWA Meta -->
+    <meta name="theme-color" content="#2a1f14" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Barbearia" />
+    <link rel="apple-touch-icon" href="/pwa-icon-192.png" />
+    <link rel="icon" type="image/png" href="/pwa-icon-192.png">
+
+    <!-- Splash Screen for iOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+
+    <!-- OG (canonical is set per-route via the Seo component) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://barber.srsoftwarestore.com/" />
+    <meta property="og:image" content="https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/830d9bd4-aff2-490a-933d-75b21b934bb9">
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/830d9bd4-aff2-490a-933d-75b21b934bb9">
+    
+  
+  
+  
+
+    <!-- Structured data: Organization + LocalBusiness (HairSalon) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "HairSalon",
+      "name": "Barbearia Classic",
+      "description": "Barbearia com tradição e estilo. Cortes de cabelo masculino, barba e agendamento online.",
+      "url": "https://barber.srsoftwarestore.com/",
+      "logo": "https://barber.srsoftwarestore.com/pwa-icon-512.png",
+      "image": "https://barber.srsoftwarestore.com/pwa-icon-512.png",
+      "priceRange": "$$",
+      "areaServed": "BR",
+      "sameAs": [],
+      "potentialAction": {
+        "@type": "ReserveAction",
+        "target": "https://barber.srsoftwarestore.com/booking"
+      }
+    }
+    </script>
+
+  <meta property="og:title" content="Barbearia Classic - Tradição e Estilo">
+  <meta name="twitter:title" content="Barbearia Classic - Tradição e Estilo">
+  <meta property="og:description" content="Agende seu horário na Barbearia Classic. Cortes profissionais com tradição e estilo.">
+  <meta name="twitter:description" content="Agende seu horário na Barbearia Classic. Cortes profissionais com tradição e estilo.">
+</head>
+
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
