@@ -251,7 +251,7 @@ function KpiCard({
     tint === 'warning' ? 'text-amber-400' :
     'text-emerald-400';
   return (
-    <div className="rounded-2xl bg-card/60 border border-border/60 p-3 flex flex-col items-center justify-center gap-1">
+    <div className="rounded-2xl bg-background/35 backdrop-blur-md border border-white/5 p-3 flex flex-col items-center justify-center gap-1">
       <Icon size={18} className={tintCls} />
       <span className={`text-2xl font-bold ${tintCls}`}>
         {loading ? '—' : value}
