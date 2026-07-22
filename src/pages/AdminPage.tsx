@@ -161,7 +161,7 @@ export default function AdminPage() {
           <p className="text-xs text-muted-foreground -mt-2">{shopDisplayName}</p>
         )}
 
-        {/* Grid de módulos */}
+        {/* Grid de módulos — glass tiles */}
         <section aria-label="Módulos" className="grid grid-cols-4 gap-2 sm:gap-3">
           {TILES.map((t, i) => {
             const Icon = t.icon;
@@ -171,22 +171,23 @@ export default function AdminPage() {
                 key={t.key}
                 onClick={() => openTile(t)}
                 className={[
-                  'aspect-square rounded-2xl border flex flex-col items-center justify-center gap-1.5 px-1 text-center transition-all',
-                  'bg-card/60 hover:bg-card active:scale-[0.97]',
+                  'aspect-square rounded-xl border flex flex-col items-center justify-center gap-1.5 px-1 text-center transition-all',
+                  'bg-background/35 backdrop-blur-md hover:bg-background/45 active:scale-[0.97]',
+                  'shadow-[inset_0_1px_0_0_hsl(0_0%_100%/0.04)]',
                   highlight
-                    ? 'border-primary/70 ring-1 ring-primary/40 shadow-[0_0_18px_-4px_hsl(var(--primary)/0.35)]'
-                    : 'border-border/60 hover:border-border',
+                    ? 'border-primary/70 ring-1 ring-primary/40 shadow-[0_0_18px_-4px_hsl(var(--primary)/0.45)]'
+                    : 'border-white/5 hover:border-white/10',
                   t.soon ? 'opacity-70' : '',
                 ].join(' ')}
               >
-                <Icon size={22} className={highlight ? 'text-primary' : 'text-foreground/80'} />
-                <span className="text-[11px] leading-tight text-foreground/90">{t.label}</span>
+                <Icon size={22} className={highlight ? 'text-primary' : 'text-foreground/85'} />
+                <span className="text-[11px] leading-tight text-foreground/90 font-heading">{t.label}</span>
               </button>
             );
           })}
         </section>
 
-        {/* Busca de cliente */}
+        {/* Busca de cliente — glass */}
         <div className="relative">
           <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
           <input
@@ -194,12 +195,12 @@ export default function AdminPage() {
             onChange={(e) => setSearch(e.target.value)}
             onKeyDown={(e) => { if (e.key === 'Enter') goSearch(); }}
             placeholder="Buscar cliente por nome ou telefone..."
-            className="w-full h-12 pl-9 pr-4 rounded-2xl bg-card/60 border border-border/60 text-sm placeholder:text-muted-foreground/70 focus:outline-none focus:border-primary/60"
+            className="w-full h-12 pl-9 pr-4 rounded-2xl bg-background/35 backdrop-blur-md border border-white/5 text-sm placeholder:text-muted-foreground/70 focus:outline-none focus:border-primary/60"
           />
         </div>
 
-        {/* Data */}
-        <div className="rounded-2xl bg-card/60 border border-border/60 px-1">
+        {/* Data — glass */}
+        <div className="rounded-2xl bg-background/35 backdrop-blur-md border border-white/5 px-1">
           <IOSDateInput
             value={date}
             onChange={(v) => setDate(v || todayISO())}
@@ -209,23 +210,23 @@ export default function AdminPage() {
         </div>
         <p className="text-xs text-muted-foreground text-center -mt-2">{weekdayLabel(date)}</p>
 
-        {/* KPIs */}
+        {/* KPIs — glass */}
         <section className="grid grid-cols-3 gap-2 sm:gap-3">
           <KpiCard icon={Users2}       value={kpi.total}      label="Total"      loading={loading} tint="primary" />
           <KpiCard icon={Clock}        value={kpi.pendentes}  label="Pendentes"  loading={loading} tint="warning" />
           <KpiCard icon={CheckCircle2} value={kpi.concluidos} label="Concluídos" loading={loading} tint="success" />
         </section>
 
-        {/* Conversão */}
-        <section className="rounded-2xl bg-card/60 border border-border/60 p-4">
+        {/* Conversão — glass */}
+        <section className="rounded-2xl bg-background/35 backdrop-blur-md border border-white/5 p-4">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
               <ShoppingBag size={16} className="text-primary" />
-              <span className="text-sm text-foreground/90">Conversão da Loja</span>
+              <span className="text-sm text-foreground/90 font-heading">Conversão da Loja</span>
             </div>
             <span className="text-primary font-semibold">{kpi.conversao}%</span>
           </div>
-          <div className="h-1.5 rounded-full bg-muted/40 overflow-hidden">
+          <div className="h-1.5 rounded-full bg-muted/30 overflow-hidden">
             <div
               className="h-full bg-primary transition-all"
               style={{ width: `${Math.min(100, kpi.conversao)}%` }}
