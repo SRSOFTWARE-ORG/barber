@@ -245,23 +245,29 @@ export default function AdminPage() {
 }
 
 function KpiCard({
-  icon: Icon, value, label, loading, tint,
+  icon: Icon, value, label, loading, tint, highlight = false,
 }: {
   icon: any;
   value: number; label: string; loading: boolean;
   tint: 'primary' | 'warning' | 'success';
+  highlight?: boolean;
 }) {
   const tintCls =
     tint === 'primary' ? 'text-primary' :
     tint === 'warning' ? 'text-amber-400' :
     'text-emerald-400';
   return (
-    <div className="rounded-2xl bg-background/35 backdrop-blur-md border border-white/5 p-3 flex flex-col items-center justify-center gap-1">
-      <Icon size={18} className={tintCls} />
-      <span className={`text-2xl font-bold ${tintCls}`}>
+    <div className={[
+      'rounded-2xl bg-black/55 backdrop-blur-xl border p-3.5 flex flex-col items-start gap-1',
+      highlight
+        ? 'border-primary/70 ring-1 ring-primary/40 shadow-[0_0_20px_-6px_hsl(var(--primary)/0.55)]'
+        : 'border-white/[0.06]',
+    ].join(' ')}>
+      <Icon size={16} className={tintCls} strokeWidth={1.75} />
+      <span className={`text-3xl font-bold leading-none mt-1 ${tintCls}`}>
         {loading ? '—' : value}
       </span>
-      <span className="text-[11px] text-muted-foreground">{label}</span>
+      <span className="text-[11px] text-muted-foreground mt-0.5">{label}</span>
     </div>
   );
 }
