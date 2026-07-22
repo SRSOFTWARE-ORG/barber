@@ -6,7 +6,7 @@ import {
   BrainCircuit, CalendarDays, UserRound, Cake, Wallet, Crown, Scissors,
   Camera, Store, Package, Tag, Star, MessageSquare, Zap, Settings2,
   UserCog, Building2, Smartphone, FileText, Palette, Search, Calendar,
-  Users2, Clock, CheckCircle2, ShoppingBag,
+  Users2, Clock, UserCheck, ShoppingBag, ChevronDown,
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
