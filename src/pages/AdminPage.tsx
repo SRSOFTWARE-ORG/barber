@@ -154,7 +154,7 @@ export default function AdminPage() {
 
       <div className="max-w-3xl mx-auto px-4 pt-4 space-y-4">
         {/* Grid de módulos */}
-        <section aria-label="Módulos" className="grid grid-cols-5 gap-2">
+        <section aria-label="Módulos" className="grid grid-cols-4 gap-2">
           {TILES.map((t, i) => (
             <GlassTile
               key={t.key}
