@@ -24,17 +24,17 @@ export default function KpiCard({
   return (
     <div
       className={[
-        'rounded-2xl bg-black/55 backdrop-blur-xl border p-3.5 flex flex-col items-start gap-1',
+        'rounded-xl bg-black/55 backdrop-blur-xl border p-2.5 flex flex-col items-start gap-0.5',
         highlight
-          ? 'border-primary/70 ring-1 ring-primary/40 shadow-[0_0_20px_-6px_hsl(var(--primary)/0.55)]'
+          ? 'border-primary/70 ring-1 ring-primary/40 shadow-[0_0_16px_-6px_hsl(var(--primary)/0.55)]'
           : 'border-white/[0.06]',
       ].join(' ')}
     >
-      <Icon size={16} className={tintCls} strokeWidth={1.75} />
-      <span className={`text-3xl font-bold leading-none mt-1 ${tintCls}`}>
+      <Icon size={14} className={tintCls} strokeWidth={1.75} />
+      <span className={`text-2xl font-bold leading-none mt-0.5 ${tintCls}`}>
         {loading ? '—' : value}
       </span>
-      <span className="text-[11px] text-muted-foreground mt-0.5">{label}</span>
+      <span className="text-[10px] text-muted-foreground mt-0.5">{label}</span>
     </div>
   );
 }
