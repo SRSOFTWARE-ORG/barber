@@ -3,15 +3,51 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 
 /**
- * Resolve o company_id principal do usuário logado.
- * Fontes (em ordem de prioridade):
- *   1. `user_roles.company_id` (tabela oficial do multi-tenant Fase 1)
- *   2. `platform_admins` → primeira empresa ativa (super-admin vê tudo)
- *   3. `profiles.company_id` (fallback se existir)
- * Retorna null enquanto carrega ou quando o usuário não está em empresa nenhuma.
+ * Resolve o company_id do usuário logado usando o schema REAL.
+ * Ordem oficial:
+ *   1. barbers.profile_id = auth.uid()   → barbers.company_id
+ *   2. clients.profile_id = auth.uid()   → clients.company_id
+ *   3. companies.owner_id = auth.uid()   → companies.id
+ *
+ * NÃO usa: profiles.company_id, user_roles.company_id, companies.is_active
+ * (essas colunas não existem no schema).
  */
+export async function resolveCompanyIdForUser(userId: string): Promise<string | null> {
+  // 1) barbers
+  const { data: barber } = await (supabase as any)
+    .from('barbers')
+    .select('company_id')
+    .eq('profile_id', userId)
+    .not('company_id', 'is', null)
+    .limit(1)
+    .maybeSingle();
+  if (barber?.company_id) return barber.company_id as string;
+
+  // 2) clients
+  const { data: client } = await (supabase as any)
+    .from('clients')
+    .select('company_id')
+    .eq('profile_id', userId)
+    .not('company_id', 'is', null)
+    .limit(1)
+    .maybeSingle();
+  if (client?.company_id) return client.company_id as string;
+
+  // 3) companies.owner_id
+  const { data: owned } = await (supabase as any)
+    .from('companies')
+    .select('id')
+    .eq('owner_id', userId)
+    .order('created_at', { ascending: true })
+    .limit(1)
+    .maybeSingle();
+  if (owned?.id) return owned.id as string;
+
+  return null;
+}
+
 export function useCompanyId(): { companyId: string | null; loading: boolean } {
-  const { user, role } = useAuth();
+  const { user } = useAuth();
   const [companyId, setCompanyId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -21,46 +57,20 @@ export function useCompanyId(): { companyId: string | null; loading: boolean } {
       if (!user) { setCompanyId(null); setLoading(false); return; }
       setLoading(true);
       try {
-        // 1) user_roles
-        const { data: roles } = await (supabase as any)
-          .from('user_roles')
-          .select('company_id, role')
-          .eq('user_id', user.id)
-          .not('company_id', 'is', null)
-          .limit(1);
-        const roleCompany = roles?.[0]?.company_id;
-        if (roleCompany) {
-          if (!cancelled) setCompanyId(roleCompany);
-          return;
+        const cid = await resolveCompanyIdForUser(user.id);
+        if (!cancelled) {
+          setCompanyId(cid);
+          console.log('Resolved company:', cid);
         }
-
-        // 2) platform admin → primeira empresa ativa
-        if (role === 'ceo' || role === 'admin') {
-          const { data: comp } = await (supabase as any)
-            .from('companies')
-            .select('id')
-            .eq('is_active', true)
-            .order('created_at', { ascending: true })
-            .limit(1)
-            .maybeSingle();
-          if (!cancelled && comp?.id) { setCompanyId(comp.id); return; }
-        }
-
-        // 3) profiles.company_id (se existir a coluna)
-        const { data: prof } = await (supabase as any)
-          .from('profiles')
-          .select('company_id')
-          .eq('id', user.id)
-          .maybeSingle();
-        if (!cancelled) setCompanyId((prof as any)?.company_id ?? null);
-      } catch {
+      } catch (err) {
+        console.warn('[useCompanyId] failed to resolve company:', err);
         if (!cancelled) setCompanyId(null);
       } finally {
         if (!cancelled) setLoading(false);
       }
     })();
     return () => { cancelled = true; };
-  }, [user?.id, role]);
+  }, [user?.id]);
 
   return { companyId, loading };
 }
