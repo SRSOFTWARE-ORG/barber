@@ -74,15 +74,9 @@ export default function BillingPortalPage() {
   async function load() {
     setLoading(true);
     try {
-      const { data: memberships } = await supabase
-        .from("user_roles" as never)
-        .select("company_id")
-        .eq("user_id", user!.id)
-        .eq("role", "owner")
-        .limit(1)
-        .maybeSingle<{ company_id: string }>();
-
-      const cid = memberships?.company_id ?? null;
+      const { resolveCompanyIdForUser } = await import("@/hooks/useCompanyId");
+      const cid = await resolveCompanyIdForUser(user!.id);
+      console.log("Resolved company:", cid);
       setCompanyId(cid);
       if (!cid) return;
 
