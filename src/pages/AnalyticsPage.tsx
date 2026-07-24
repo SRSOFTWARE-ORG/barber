@@ -46,15 +46,10 @@ export default function AnalyticsPage() {
   async function load() {
     setLoading(true);
     try {
-      const { data: membership } = await supabase
-        .from("user_roles" as never)
-        .select("company_id")
-        .eq("user_id", user!.id)
-        .in("role", ["owner", "manager"])
-        .limit(1)
-        .maybeSingle<{ company_id: string }>();
+      const { resolveCompanyIdForUser } = await import("@/hooks/useCompanyId");
+      const cid = await resolveCompanyIdForUser(user!.id);
+      console.log("Resolved company:", cid);
 
-      const cid = membership?.company_id ?? null;
       setCompanyId(cid);
       if (!cid) return;
 

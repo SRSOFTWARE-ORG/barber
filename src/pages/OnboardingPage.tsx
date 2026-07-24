@@ -56,13 +56,10 @@ export default function OnboardingPage() {
   async function bootstrap() {
     setLoading(true);
     try {
-      const { data: membership } = await supabase
-        .from("user_roles" as never)
-        .select("company_id")
-        .eq("user_id", user!.id)
-        .eq("role", "owner")
-        .limit(1)
-        .maybeSingle<{ company_id: string }>();
+      const { resolveCompanyIdForUser } = await import("@/hooks/useCompanyId");
+      const cid = await resolveCompanyIdForUser(user!.id);
+      console.log("Resolved company:", cid);
+      const membership = cid ? { company_id: cid } : null;
 
       if (!membership?.company_id) {
         toast.error("Você precisa ter uma empresa antes de iniciar o onboarding.");

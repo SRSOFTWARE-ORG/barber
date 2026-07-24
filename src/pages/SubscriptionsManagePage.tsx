@@ -64,16 +64,18 @@ export default function SubscriptionsManagePage() {
     if (!user) return;
     (async () => {
       setLoading(true);
-      const { data: cs } = await supabase
-        .from('user_roles')
-        .select('company_id, companies(id, name)')
-        .eq('user_id', user.id);
-      const seen = new Set<string>();
+      const { resolveCompanyIdForUser } = await import('@/hooks/useCompanyId');
+      const cid = await resolveCompanyIdForUser(user.id);
+      console.log('Resolved company:', cid);
       const cos: Company[] = [];
-      (cs as any[] | null)?.forEach((r) => {
-        const c = r.companies;
-        if (c && !seen.has(c.id)) { seen.add(c.id); cos.push(c); }
-      });
+      if (cid) {
+        const { data: comp } = await (supabase as any)
+          .from('companies')
+          .select('id, name')
+          .eq('id', cid)
+          .maybeSingle();
+        if (comp) cos.push(comp as Company);
+      }
       setCompanies(cos);
       if (cos[0] && !companyId) setCompanyId(cos[0].id);
       setLoading(false);
