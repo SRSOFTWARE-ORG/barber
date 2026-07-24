@@ -13,20 +13,50 @@ export function adminClient() {
 }
 
 /**
- * Deriva o Relying Party ID e o Origin esperado a partir do cabeçalho Origin
- * da requisição. Assim funciona em qualquer domínio (preview, published ou
- * o domínio oficial barber.srsoftwarestore.com) sem hardcode.
+ * Retorna o Relying Party ID e Origin esperados para o WebAuthn.
+ *
+ * Segurança: o Origin/RP ID **não** pode ser derivado do cabeçalho `Origin`
+ * da requisição — isso anula a proteção anti-phishing do WebAuthn, pois um
+ * atacante em um domínio clonado poderia mandar seu próprio Origin e ser
+ * aceito. Em vez disso mantemos uma allowlist fixa (com override opcional
+ * via env `WEBAUTHN_ALLOWED_ORIGINS`, lista separada por vírgulas de
+ * origens https válidas) e só aceitamos o Origin da requisição se ele
+ * estiver nessa allowlist. Caso contrário, lançamos e o handler responde
+ * com erro (nunca falamos "confie no cliente").
  */
-export function getRP(req: Request): { rpID: string; origin: string } {
-  const origin = req.headers.get('origin') ?? '';
-  let rpID = 'localhost';
-  try {
-    rpID = new URL(origin).hostname;
-  } catch {
-    // mantém localhost como fallback
-  }
-  return { rpID, origin };
+const DEFAULT_ALLOWED_ORIGINS = [
+  'https://barber.srsoftwarestore.com',
+];
+
+function getAllowedOrigins(): string[] {
+  const extra = (Deno.env.get('WEBAUTHN_ALLOWED_ORIGINS') ?? '')
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean);
+  return Array.from(new Set([...DEFAULT_ALLOWED_ORIGINS, ...extra]));
 }
+
+export function getRP(req: Request): { rpID: string; origin: string } {
+  const requestOrigin = req.headers.get('origin') ?? '';
+  const allowed = getAllowedOrigins();
+
+  if (!requestOrigin || !allowed.includes(requestOrigin)) {
+    throw new Error(
+      `Origin não autorizado para WebAuthn: "${requestOrigin || '(vazio)'}". ` +
+      `Configure WEBAUTHN_ALLOWED_ORIGINS para habilitar domínios adicionais.`,
+    );
+  }
+
+  let rpID: string;
+  try {
+    rpID = new URL(requestOrigin).hostname;
+  } catch {
+    throw new Error(`Origin inválido para WebAuthn: "${requestOrigin}"`);
+  }
+
+  return { rpID, origin: requestOrigin };
+}
+
 
 /** Valida o token Bearer e retorna o usuário autenticado (ou lança 401). */
 export async function getUserFromReq(req: Request) {
